@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.flink.metrics.statsd;
+package org.apache.flink.metrics.opentsdb;
 
 import org.apache.flink.annotation.PublicEvolving;
 import org.apache.flink.metrics.Counter;
@@ -49,9 +49,9 @@ import java.util.NoSuchElementException;
  * <p>Ported since it was not present in maven central.
  */
 @PublicEvolving
-public class StatsDReporter extends AbstractReporter implements Scheduled {
+public class OpentsdbReporter extends AbstractReporter implements Scheduled {
 
-	private static final Logger LOG = LoggerFactory.getLogger(StatsDReporter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OpentsdbReporter.class);
 
 	public static final String ARG_HOST = "host";
 	public static final String ARG_PORT = "port";

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.flink.metrics.statsd;
+package org.apache.flink.metrics.opentsdb;
 
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.configuration.ConfigConstants;
