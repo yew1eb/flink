@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MessageCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:noNamespaceSchemaLocation="messagecollection.xsd">
+
+	<Plugin>
+		<ShortDescription>Works Applications Findbugs plugin</ShortDescription>
+		<Details>This plugin contains all of the Flink SpotBugs detectors.</Details>
+	</Plugin>
+
+	<Detector class="org.apache.flink.spotbugs.VisibleForTestingDetector">
+		<Details>
+		</Details>
+	</Detector>
+
+	<BugPattern type="VISIBLE_FOR_TESTING">
+		<ShortDescription>
+			You cannot access to package-private method which is annotated by @VisibleForTesting.
+		</ShortDescription>
+		<LongDescription>
+			You cannot access to package-private method which is annotated by @VisibleForTesting.
+			This annotation means that visibility was widened only for test code, so your implementation code
+			shouldn't access to method which is annotated by this annotation.
+		</LongDescription>
+		<Details>
+			<![CDATA[
+     		<p>You cannot access to package-private method which is annotated by @VisibleForTesting.</p>
+      		<p>This annotation means that visibility was widened only for test code, so your implementation code
+     	 	shouldn't access to method which is annotated by this annotation.</p>
+         	]]>
+		</Details>
+	</BugPattern>
+	<BugCode abbrev="FLINK_VFT">Flink Visible For Testing</BugCode>
+</MessageCollection>

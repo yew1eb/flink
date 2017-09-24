@@ -560,6 +560,11 @@ under the License.
 							<findbugsXmlOutputDirectory>${project.build.directory}/spotbugs</findbugsXmlOutputDirectory>
 							<excludeFilterFile>tools/maven/spotbugs-exclude.xml</excludeFilterFile>
 							<failOnError>true</failOnError>
+							<plugins>
+								<groupId>org.apache.flink.spotbugs</groupId>
+								<artifactId>flink-spotbugs-plugin</artifactId>
+								<version>1.0.0</version>
+							</plugins>
 						</configuration>
 					</plugin>
 

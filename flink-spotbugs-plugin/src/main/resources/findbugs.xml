@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindbugsPlugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:noNamespaceSchemaLocation="findbugsplugin.xsd"
+				pluginid="org.apache.flink.spotbugs.detector">
+
+
+	<Detector class="org.apache.flink.spotbugs.VisibleForTestingDetector" reports="VISIBLE_FOR_TESTING"
+			  speed="fast"/>
+
+	<BugPattern abbrev="FLINK_VFT" type="VISIBLE_FOR_TESTING" category="CORRECTNESS"/>
+</FindbugsPlugin>
