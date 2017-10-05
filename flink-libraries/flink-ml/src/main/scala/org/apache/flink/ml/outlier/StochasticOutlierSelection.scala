@@ -195,9 +195,8 @@ object StochasticOutlierSelection extends WithParameters {
                                     input: DataSet[T]): DataSet[Double] = {
 
         val resultingParameters = instance.parameters ++ transformParameters
-
         // Map to the right format
-        val vectorsWithIndex = input.zipWithUniqueId.map(vector => {
+        val vectorsWithIndex = input.zipWithUniqueId.map( { vector: (Long, T) =>
           BreezeLabeledVector(vector._1.toInt, vector._2.asBreeze)
         })
 

@@ -582,7 +582,9 @@ class WindowTranslationTest {
       .window(TumblingEventTimeWindows.of(Time.seconds(1)))
       .reduce(
         { (x, _) => x },
-        { (_, _, in, out: Collector[(String, Int)]) => in foreach { x => out.collect(x)} })
+        { (_: String, _: TimeWindow, in: Iterable[(String, Int)], out: Collector[(String, Int)]) =>
+            in foreach { x => out.collect(x)}
+        })
 
     val transform = window1
       .javaStream
@@ -825,9 +827,9 @@ class WindowTranslationTest {
       .keyBy(_._1)
       .window(TumblingEventTimeWindows.of(Time.seconds(1)))
       .aggregate(new DummyAggregator(),
-        { (_, _, in: Iterable[(String, Int)], out: Collector[(String, Int)]) => {
+        { (_: String, _: TimeWindow, in: Iterable[(String, Int)], out: Collector[(String, Int)]) =>
           in foreach { x => out.collect(x)}
-        } })
+        })
 
     val transform = window1
       .javaStream
@@ -1232,7 +1234,11 @@ class WindowTranslationTest {
       .fold(
         ("", "", 1),
         { (acc: (String, String, Int), _) => acc },
-        { (_, _, in: Iterable[(String, String, Int)], out: Collector[(String, Int)]) =>
+        { (
+            _: String,
+            _: TimeWindow,
+            in: Iterable[(String, String, Int)],
+            out: Collector[(String, Int)]) =>
           in foreach { x => out.collect((x._1, x._3)) }
         })
 

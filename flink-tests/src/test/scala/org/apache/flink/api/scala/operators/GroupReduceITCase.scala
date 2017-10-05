@@ -23,13 +23,12 @@ import org.apache.flink.api.common.functions._
 import org.apache.flink.api.common.operators.Order
 import org.apache.flink.api.scala._
 import org.apache.flink.api.scala.util.CollectionDataSets
-import org.apache.flink.api.scala.util.CollectionDataSets.{MutableTuple3, CustomType}
+import org.apache.flink.api.scala.util.CollectionDataSets._
 import org.apache.flink.optimizer.Optimizer
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.test.util.MultipleProgramsTestBase.TestExecutionMode
 import org.apache.flink.test.util.MultipleProgramsTestBase
 import org.apache.flink.util.Collector
-
 import org.junit.Test
 import org.junit.Assert._
 import org.junit.Assume._
@@ -269,7 +268,8 @@ class GroupReduceITCase(mode: TestExecutionMode) extends MultipleProgramsTestBas
       .map( t => MutableTuple3(t._1, t._2, t._3) )
     
     val reduceDs =  ds.groupBy(1).reduceGroup {
-      (in, out: Collector[MutableTuple3[Int, Long, String]]) =>
+      (in: Iterator[MutableTuple3[Int, Long, String]],
+       out: Collector[MutableTuple3[Int, Long, String]]) =>
         for (t <- in) {
           if (t._1 < 4) {
             t._3 = "Hi!"
@@ -488,7 +488,7 @@ class GroupReduceITCase(mode: TestExecutionMode) extends MultipleProgramsTestBas
     val ds =  CollectionDataSets.getPojoContainingTupleAndWritable(env)
     
     val reduceDs = ds.groupBy("hadoopFan", "theTuple.*").reduceGroup {
-      (values, out: Collector[Int]) => {
+      (values: Iterator[PojoContainingTupleAndWritable], out: Collector[Int]) => {
         var c: Int = 0
         for (v <- values) {
           c += 1
@@ -511,7 +511,7 @@ class GroupReduceITCase(mode: TestExecutionMode) extends MultipleProgramsTestBas
     val ds = CollectionDataSets.getTupleContainingPojos(env)
     
     val reduceDs =  ds.groupBy("_1", "_2.*").reduceGroup {
-      (values, out: Collector[Int]) => {
+      (values: Iterator[(Int, CrazyNested, POJO)], out: Collector[Int]) => {
         out.collect(values.size)
       }
     }
@@ -643,7 +643,7 @@ class GroupReduceITCase(mode: TestExecutionMode) extends MultipleProgramsTestBas
       .sortGroup("theTuple._1", Order.DESCENDING)
       .sortGroup("theTuple._2", Order.DESCENDING)
       .reduceGroup {
-        (values, out: Collector[String]) => {
+        (values: Iterator[PojoContainingTupleAndWritable], out: Collector[String]) => {
           var once: Boolean = false
           val concat: StringBuilder = new StringBuilder
           for (value <- values) {
@@ -803,7 +803,7 @@ class GroupReduceITCase(mode: TestExecutionMode) extends MultipleProgramsTestBas
     val ds =  CollectionDataSets.getPojoWithMultiplePojos(env)
     
     val reduceDs =  ds.groupBy("p2.a2").reduceGroup {
-      (values, out: Collector[String]) => {
+      (values: Iterator[PojoWithMultiplePojos], out: Collector[String]) => {
         val concat: StringBuilder = new StringBuilder()
         for (value <- values) {
           concat.append(value.p2.a2)
