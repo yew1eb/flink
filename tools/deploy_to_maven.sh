@@ -92,6 +92,11 @@ if [[ $CURRENT_FLINK_VERSION == *SNAPSHOT* ]] ; then
     mvn ${MVN_SNAPSHOT_OPTS} -Pscala-2.11
     deploy_to_s3 $CURRENT_FLINK_VERSION "hadoop2"
 
+    # hadoop2 scala 2.12
+    echo "deploy hadoop2 version (standard) for scala 2.12"
+    mvn ${MVN_SNAPSHOT_OPTS} -Pscala-2.12
+    deploy_to_s3 $CURRENT_FLINK_VERSION "hadoop2_2.12"
+
     exit 0
 else
     exit 1

@@ -56,6 +56,7 @@ under the License.
 			<artifactId>flink-connector-kafka-base_${scala.binary.version}</artifactId>
 			<version>${project.version}</version>
 			<exclusions>
+				<!-- exclude 0.10 dependencies -->
 				<exclusion>
 					<groupId>org.apache.kafka</groupId>
 					<artifactId>kafka_${scala.binary.version}</artifactId>
@@ -94,7 +95,7 @@ under the License.
 			<artifactId>flink-connector-kafka-base_${scala.binary.version}</artifactId>
 			<version>${project.version}</version>
 			<exclusions>
-				<!-- exclude 0.8 dependencies -->
+				<!-- exclude 0.10 dependencies -->
 				<exclusion>
 					<groupId>org.apache.kafka</groupId>
 					<artifactId>kafka_${scala.binary.version}</artifactId>
@@ -105,9 +106,10 @@ under the License.
 		</dependency>
 
 		<dependency>
-			<!-- include 0.9 server for tests  -->
+			<!-- include 0.9 server for tests, hard dependecy on 2.11 because there is no
+			Kafka 0.9.x for Scala 2.12-->
 			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_${scala.binary.version}</artifactId>
+			<artifactId>kafka_2.11</artifactId>
 			<version>${kafka.version}</version>
 			<scope>test</scope>
 		</dependency>

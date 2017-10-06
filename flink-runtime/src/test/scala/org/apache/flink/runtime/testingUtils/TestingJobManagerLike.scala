@@ -69,7 +69,7 @@ trait TestingJobManagerLike extends FlinkActor {
 
   val waitForLeader = scala.collection.mutable.HashSet[ActorRef]()
 
-  val waitForNumRegisteredTaskManagers = mutable.PriorityQueue.newBuilder(
+  val waitForNumRegisteredTaskManagers = new mutable.PriorityQueue[(Int, ActorRef)]()(
     new Ordering[(Int, ActorRef)] {
       override def compare(x: (Int, ActorRef), y: (Int, ActorRef)): Int = y._1 - x._1
     })

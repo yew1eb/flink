@@ -242,6 +242,11 @@ deploy_to_maven() {
   cd flink
   cp ../../deploysettings.xml .
 
+  echo "Deploying Scala 2.12 version"
+  $MVN clean deploy -Prelease,docs-and-source,scala-2.12 --settings deploysettings.xml -DskipTests -Dgpg.executable=$GPG -Dgpg.keyname=$GPG_KEY -Dgpg.passphrase=$GPG_PASSPHRASE -DretryFailedDeploymentCount=10
+
+  # It is important to first deploy scala 2.12 and then scala 2.11 so that the quickstarts (which are independent of the scala version)
+  # are depending on scala 2.11.
   echo "Deploying Scala 2.11 version"
   $MVN clean deploy -Prelease,docs-and-source,scala-2.11 --settings deploysettings.xml -DskipTests -Dgpg.executable=$GPG -Dgpg.keyname=$GPG_KEY -Dgpg.passphrase=$GPG_PASSPHRASE -DretryFailedDeploymentCount=10
 }
@@ -272,9 +277,15 @@ if [ "$SCALA_VERSION" == "none" ] && [ "$HADOOP_VERSION" == "none" ]; then
   make_binary_release "hadoop26" "-Dhadoop.version=2.6.5" "2.11"
   make_binary_release "hadoop27" "-Dhadoop.version=2.7.3" "2.11"
   make_binary_release "hadoop28" "-Dhadoop.version=2.8.0" "2.11"
+
+  make_binary_release "hadoop2" "" "2.12"
+  make_binary_release "hadoop26" "-Dhadoop.version=2.6.5" "2.12"
+  make_binary_release "hadoop27" "-Dhadoop.version=2.7.3" "2.12"
+  make_binary_release "hadoop28" "-Dhadoop.version=2.8.0" "2.12"
 elif [ "$SCALA_VERSION" == none ] && [ "$HADOOP_VERSION" != "none" ]
 then
   make_binary_release "hadoop2" "-Dhadoop.version=$HADOOP_VERSION" "2.11"
+  make_binary_release "hadoop2" "-Dhadoop.version=$HADOOP_VERSION" "2.12"
 elif [ "$SCALA_VERSION" != none ] && [ "$HADOOP_VERSION" == "none" ]
 then
   make_binary_release "hadoop2" "" "$SCALA_VERSION"
