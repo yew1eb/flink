@@ -349,7 +349,7 @@ under the License.
 			<dependency>
 				<groupId>org.javassist</groupId>
 				<artifactId>javassist</artifactId>
-				<version>3.18.2-GA</version>
+				<version>3.22.0-GA</version>
 			</dependency>
 
 			<!-- joda time is pulled in different versions by different transitive dependencies-->
