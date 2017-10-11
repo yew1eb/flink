@@ -117,7 +117,7 @@ under the License.
 		<prometheus.version>0.0.21</prometheus.version>
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
-		<powermock.version>1.6.5</powermock.version>
+		<powermock.version>1.7.3</powermock.version>
 		<japicmp.skip>false</japicmp.skip>
 		<!--
 			Keeping the MiniKDC version fixed instead of taking hadoop version dependency
