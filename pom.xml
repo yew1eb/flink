@@ -107,8 +107,8 @@ under the License.
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<scala.macros.version>2.1.0</scala.macros.version>
 		<!-- Default scala versions, may be overwritten by build profiles -->
-		<scala.version>2.11.11</scala.version>
-		<scala.binary.version>2.11</scala.binary.version>
+		<scala.version>2.12.3</scala.version>
+		<scala.binary.version>2.12</scala.binary.version>
 		<chill.version>0.7.6</chill.version>
 		<zookeeper.version>3.4.10</zookeeper.version>
 		<curator.version>2.12.0</curator.version>
@@ -118,7 +118,7 @@ under the License.
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
 		<powermock.version>1.7.3</powermock.version>
-		<japicmp.skip>false</japicmp.skip>
+		<japicmp.skip>true</japicmp.skip>
 		<!--
 			Keeping the MiniKDC version fixed instead of taking hadoop version dependency
 			to support testing Kafka, ZK etc., modules that does not have Hadoop dependency
