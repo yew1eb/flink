@@ -20,6 +20,7 @@ package org.apache.flink.streaming.connectors.elasticsearch;
 import org.apache.flink.api.common.functions.RuntimeContext;
 import org.apache.flink.core.testutils.CheckedThread;
 import org.apache.flink.core.testutils.MultiShotLatch;
+import org.apache.flink.metrics.MetricGroup;
 import org.apache.flink.streaming.api.operators.StreamSink;
 import org.apache.flink.streaming.connectors.elasticsearch.util.NoOpFailureHandler;
 import org.apache.flink.streaming.runtime.streamrecord.StreamRecord;
@@ -455,7 +456,7 @@ public class ElasticsearchSinkBaseTest {
 		 * works correctly with request flushing logic.
 		 */
 		@Override
-		protected BulkProcessor buildBulkProcessor(final BulkProcessor.Listener listener) {
+		protected BulkProcessor buildBulkProcessor(final BulkProcessor.Listener listener, MetricGroup metrics) {
 			this.mockBulkProcessor = mock(BulkProcessor.class);
 
 			when(mockBulkProcessor.add(any(ActionRequest.class))).thenAnswer(new Answer<Object>() {

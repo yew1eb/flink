@@ -20,6 +20,7 @@ package org.apache.flink.streaming.connectors.elasticsearch;
 import org.apache.flink.annotation.VisibleForTesting;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.metrics.MetricGroup;
 import org.apache.flink.runtime.state.FunctionInitializationContext;
 import org.apache.flink.runtime.state.FunctionSnapshotContext;
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction;
@@ -27,10 +28,12 @@ import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 import org.apache.flink.util.InstantiationUtil;
 
 import org.elasticsearch.action.ActionRequest;
+import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
@@ -49,12 +52,12 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
  * Base class for all Flink Elasticsearch Sinks.
- *
+ * <p>
  * <p>This class implements the common behaviour across Elasticsearch versions, such as
  * the use of an internal {@link BulkProcessor} to buffer multiple {@link ActionRequest}s before
  * sending the requests to the cluster, as well as passing input records to the user provided
  * {@link ElasticsearchSinkFunction} for processing.
- *
+ * <p>
  * <p>The version specific API calls for different Elasticsearch versions should be defined by a concrete implementation of
  * a {@link ElasticsearchApiCallBridge}, which is provided to the constructor of this class. This call bridge is used,
  * for example, to create a Elasticsearch {@link Client}, handle failed item responses, etc.
@@ -91,7 +94,7 @@ public abstract class ElasticsearchSinkBase<T> extends RichSinkFunction<T> imple
 	 * Provides a backoff policy for bulk requests. Whenever a bulk request is rejected due to resource constraints
 	 * (i.e. the client's internal thread pool is full), the backoff policy decides how long the bulk processor will
 	 * wait before the operation is retried internally.
-	 *
+	 * <p>
 	 * <p>This is a proxy for version specific backoff policies.
 	 */
 	public static class BulkFlushBackoffPolicy implements Serializable {
@@ -139,32 +142,44 @@ public abstract class ElasticsearchSinkBase<T> extends RichSinkFunction<T> imple
 	//  User-facing API and configuration
 	// ------------------------------------------------------------------------
 
-	/** The user specified config map that we forward to Elasticsearch when we create the {@link Client}. */
+	/**
+	 * The user specified config map that we forward to Elasticsearch when we create the {@link Client}.
+	 */
 	private final Map<String, String> userConfig;
 
-	/** The function that is used to construct mulitple {@link ActionRequest ActionRequests} from each incoming element. */
+	/**
+	 * The function that is used to construct mulitple {@link ActionRequest ActionRequests} from each incoming element.
+	 */
 	private final ElasticsearchSinkFunction<T> elasticsearchSinkFunction;
 
-	/** User-provided handler for failed {@link ActionRequest ActionRequests}. */
+	/**
+	 * User-provided handler for failed {@link ActionRequest ActionRequests}.
+	 */
 	private final ActionRequestFailureHandler failureHandler;
 
-	/** If true, the producer will wait until all outstanding action requests have been sent to Elasticsearch. */
+	/**
+	 * If true, the producer will wait until all outstanding action requests have been sent to Elasticsearch.
+	 */
 	private boolean flushOnCheckpoint = true;
 
-	/** Provided to the user via the {@link ElasticsearchSinkFunction} to add {@link ActionRequest ActionRequests}. */
+	/**
+	 * Provided to the user via the {@link ElasticsearchSinkFunction} to add {@link ActionRequest ActionRequests}.
+	 */
 	private transient BulkProcessorIndexer requestIndexer;
 
 	// ------------------------------------------------------------------------
 	//  Internals for the Flink Elasticsearch Sink
 	// ------------------------------------------------------------------------
 
-	/** Call bridge for different version-specific. */
+	/**
+	 * Call bridge for different version-specific.
+	 */
 	private final ElasticsearchApiCallBridge callBridge;
 
 	/**
 	 * Number of pending action requests not yet acknowledged by Elasticsearch.
 	 * This value is maintained only if {@link ElasticsearchSinkBase#flushOnCheckpoint} is {@code true}.
-	 *
+	 * <p>
 	 * <p>This is incremented whenever the user adds (or re-adds through the {@link ActionRequestFailureHandler}) requests
 	 * to the {@link RequestIndexer}. It is decremented for each completed request of a bulk request, in
 	 * {@link BulkProcessor.Listener#afterBulk(long, BulkRequest, BulkResponse)} and
@@ -172,17 +187,26 @@ public abstract class ElasticsearchSinkBase<T> extends RichSinkFunction<T> imple
 	 */
 	private AtomicLong numPendingRequests = new AtomicLong(0);
 
-	/** Elasticsearch client created using the call bridge. */
+	/**
+	 * Elasticsearch client created using the call bridge.
+	 */
 	private transient Client client;
 
-	/** Bulk processor to buffer and send requests to Elasticsearch, created using the client. */
+	/**
+	 * Bulk processor to buffer and send requests to Elasticsearch, created using the client.
+	 */
 	private transient BulkProcessor bulkProcessor;
+
+	/**
+	 * Metric group for the Elasticsearch sink.
+	 */
+	private transient final MetricGroup metrics;
 
 	/**
 	 * This is set from inside the {@link BulkProcessor.Listener} if a {@link Throwable} was thrown in callbacks and
 	 * the user considered it should fail the sink via the
 	 * {@link ActionRequestFailureHandler#onFailure(ActionRequest, Throwable, int, RequestIndexer)} method.
-	 *
+	 * <p>
 	 * <p>Errors will be checked and rethrown before processing each input element, and when the sink is closed.
 	 */
 	private final AtomicReference<Throwable> failureThrowable = new AtomicReference<>();
@@ -263,12 +287,14 @@ public abstract class ElasticsearchSinkBase<T> extends RichSinkFunction<T> imple
 		}
 
 		this.userConfig = userConfig;
+
+		this.metrics = getRuntimeContext().getMetricGroup();
 	}
 
 	/**
 	 * Disable flushing on checkpoint. When disabled, the sink will not wait for all
 	 * pending action requests to be acknowledged by Elasticsearch on checkpoints.
-	 *
+	 * <p>
 	 * <p>NOTE: If flushing on checkpoint is disabled, the Flink Elasticsearch Sink does NOT
 	 * provide any strong guarantees for at-least-once delivery of action requests.
 	 */
@@ -279,7 +305,7 @@ public abstract class ElasticsearchSinkBase<T> extends RichSinkFunction<T> imple
 	@Override
 	public void open(Configuration parameters) throws Exception {
 		client = callBridge.createClient(userConfig);
-		bulkProcessor = buildBulkProcessor(new BulkProcessorListener());
+		bulkProcessor = buildBulkProcessor(new BulkProcessorListener(metrics));
 		requestIndexer = new BulkProcessorIndexer(bulkProcessor, flushOnCheckpoint, numPendingRequests);
 	}
 
@@ -328,7 +354,7 @@ public abstract class ElasticsearchSinkBase<T> extends RichSinkFunction<T> imple
 
 	/**
 	 * Build the {@link BulkProcessor}.
-	 *
+	 * <p>
 	 * <p>Note: this is exposed for testing purposes.
 	 */
 	@VisibleForTesting
@@ -366,21 +392,35 @@ public abstract class ElasticsearchSinkBase<T> extends RichSinkFunction<T> imple
 	}
 
 	private class BulkProcessorListener implements BulkProcessor.Listener {
+		private final MetricGroup metricGroup;
+
+		public BulkProcessorListener(MetricGroup metrics) {
+			this.metricGroup = metrics;
+		}
+
 		@Override
-		public void beforeBulk(long executionId, BulkRequest request) { }
+		public void beforeBulk(long executionId, BulkRequest request) {
+		}
 
 		@Override
 		public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
+			boolean hasFailure = false;
+
 			if (response.hasFailures()) {
 				BulkItemResponse itemResponse;
 				Throwable failure;
 				RestStatus restStatus;
+				ActionResponse resp;
+				String index;
+
 
 				try {
 					for (int i = 0; i < response.getItems().length; i++) {
 						itemResponse = response.getItems()[i];
+						index = itemResponse.getIndex();
 						failure = callBridge.extractFailureCauseFromBulkItemResponse(itemResponse);
 						if (failure != null) {
+							hasFailure = true;
 							LOG.error("Failed Elasticsearch item request: {}", itemResponse.getFailureMessage(), failure);
 
 							restStatus = itemResponse.getFailure().getStatus();
@@ -389,6 +429,16 @@ public abstract class ElasticsearchSinkBase<T> extends RichSinkFunction<T> imple
 							} else {
 								failureHandler.onFailure(request.requests().get(i), failure, restStatus.getStatus(), requestIndexer);
 							}
+						} else {
+							resp = itemResponse.getResponse();
+							if(resp instanceof IndexResponse) {
+								if(((IndexResponse) resp).isCreated()){
+									this.metricGroup.addGroup(index).counter()
+									//inserts
+								} else {
+									//updates
+								}
+							}
 						}
 					}
 				} catch (Throwable t) {
@@ -396,6 +446,12 @@ public abstract class ElasticsearchSinkBase<T> extends RichSinkFunction<T> imple
 					// if the failure handler decides to throw an exception
 					failureThrowable.compareAndSet(null, t);
 				}
+			}
+
+			if(!hasFailure) {
+				//bulk success
+			}else {
+				//bulk fail
 			}
 
 			if (flushOnCheckpoint) {
