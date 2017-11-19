@@ -25,7 +25,7 @@ import org.apache.flink.streaming.connectors.kinesis.FlinkKinesisProducer;
 import org.apache.flink.streaming.connectors.kinesis.config.AWSConfigConstants;
 import org.apache.flink.streaming.util.serialization.SimpleStringSchema;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.text.RandomStringGenerator;
 
 import java.util.Properties;
 
@@ -70,7 +70,7 @@ public class ProduceIntoKinesis {
 			long seq = 0;
 			while (running) {
 				Thread.sleep(10);
-				ctx.collect((seq++) + "-" + RandomStringUtils.randomAlphabetic(12));
+				ctx.collect((seq++) + "-" + new RandomStringGenerator.Builder().build().generate(12));
 			}
 		}
 

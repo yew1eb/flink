@@ -24,7 +24,7 @@ import org.apache.flink.graph.drivers.parameter.BooleanParameter;
 import org.apache.flink.graph.drivers.parameter.DoubleParameter;
 import org.apache.flink.graph.drivers.parameter.IterationConvergence;
 
-import org.apache.commons.lang3.text.StrBuilder;
+import org.apache.commons.text.StrBuilder;
 
 /**
  * Driver for {@link org.apache.flink.graph.library.linkanalysis.PageRank}.

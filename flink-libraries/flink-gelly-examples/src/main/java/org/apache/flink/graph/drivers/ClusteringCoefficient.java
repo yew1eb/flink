@@ -25,8 +25,8 @@ import org.apache.flink.graph.asm.result.PrintableResult;
 import org.apache.flink.graph.drivers.parameter.ChoiceParameter;
 import org.apache.flink.types.CopyableValue;
 
-import org.apache.commons.lang3.text.StrBuilder;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.StrBuilder;
+import org.apache.commons.text.WordUtils;
 
 import java.io.PrintStream;
 

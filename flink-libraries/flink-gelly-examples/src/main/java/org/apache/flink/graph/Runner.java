@@ -62,7 +62,7 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.JsonEncoding;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.JsonFactory;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.JsonGenerator;
 
-import org.apache.commons.lang3.text.StrBuilder;
+import org.apache.commons.text.StrBuilder;
 
 import java.io.File;
 import java.io.IOException;

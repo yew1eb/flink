@@ -24,8 +24,8 @@ import org.apache.flink.graph.drivers.parameter.BooleanParameter;
 import org.apache.flink.graph.drivers.parameter.DoubleParameter;
 import org.apache.flink.types.CopyableValue;
 
-import org.apache.commons.lang3.text.StrBuilder;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.StrBuilder;
+import org.apache.commons.text.WordUtils;
 
 /**
  * Driver for {@link org.apache.flink.graph.library.similarity.AdamicAdar}.

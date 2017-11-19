@@ -79,6 +79,11 @@
 			<artifactId>jsr305</artifactId>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<scope>compile</scope>
+		</dependency>
 
 		<!-- Add a logging Framework, to make the examples produce -->
 		<!--             logs when executing in the IDE            -->

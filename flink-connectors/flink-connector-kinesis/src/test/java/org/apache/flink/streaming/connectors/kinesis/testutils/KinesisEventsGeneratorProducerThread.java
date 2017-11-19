@@ -25,7 +25,7 @@ import org.apache.flink.streaming.connectors.kinesis.FlinkKinesisProducer;
 import org.apache.flink.streaming.connectors.kinesis.config.AWSConfigConstants;
 import org.apache.flink.streaming.util.serialization.SimpleStringSchema;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.text.RandomStringGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,7 +100,7 @@ public class KinesisEventsGeneratorProducerThread {
 			long seq = 0;
 			while (running) {
 				Thread.sleep(10);
-				String evt = (seq++) + "-" + RandomStringUtils.randomAlphabetic(12);
+				String evt = (seq++) + "-" + new RandomStringGenerator.Builder().build().generate(12);
 				ctx.collect(evt);
 				LOG.info("Emitting event {}", evt);
 				if (seq >= limit) {

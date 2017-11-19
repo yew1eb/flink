@@ -23,7 +23,7 @@ import org.apache.flink.client.program.ProgramParametrizationException;
 import org.apache.flink.util.Preconditions;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.StrBuilder;
+import org.apache.commons.text.StrBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;

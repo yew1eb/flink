@@ -22,8 +22,8 @@ import org.apache.flink.api.java.DataSet;
 import org.apache.flink.graph.Graph;
 import org.apache.flink.graph.drivers.parameter.IterationConvergence;
 
-import org.apache.commons.lang3.text.StrBuilder;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.StrBuilder;
+import org.apache.commons.text.WordUtils;
 
 /**
  * Driver for {@link org.apache.flink.graph.library.linkanalysis.HITS}.

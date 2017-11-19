@@ -31,7 +31,7 @@ import org.apache.flink.types.LongValue;
 import org.apache.flink.types.NullValue;
 import org.apache.flink.types.StringValue;
 
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 
 /**
  * Read a {@link Graph} from a CSV file using {@link IntValue},

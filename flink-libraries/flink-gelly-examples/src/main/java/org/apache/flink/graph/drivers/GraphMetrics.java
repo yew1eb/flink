@@ -24,7 +24,7 @@ import org.apache.flink.graph.GraphAnalytic;
 import org.apache.flink.graph.asm.result.PrintableResult;
 import org.apache.flink.graph.drivers.parameter.ChoiceParameter;
 
-import org.apache.commons.lang3.text.StrBuilder;
+import org.apache.commons.text.StrBuilder;
 
 import java.io.PrintStream;
 

@@ -32,7 +32,7 @@ import com.amazonaws.services.kinesis.model.LimitExceededException;
 import com.amazonaws.services.kinesis.model.PutRecordsRequest;
 import com.amazonaws.services.kinesis.model.PutRecordsRequestEntry;
 import com.amazonaws.services.kinesis.model.PutRecordsResult;
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.text.RandomStringGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,7 +120,7 @@ public class ManualExactlyOnceWithStreamReshardingTest {
 								}
 								batch.add(
 									new PutRecordsRequestEntry()
-										.withData(ByteBuffer.wrap(((i) + "-" + RandomStringUtils.randomAlphabetic(12)).getBytes(ConfigConstants.DEFAULT_CHARSET)))
+										.withData(ByteBuffer.wrap(((i) + "-" + new RandomStringGenerator.Builder().build().generate(12)).getBytes(ConfigConstants.DEFAULT_CHARSET)))
 										.withPartitionKey(UUID.randomUUID().toString()));
 							}
 							count += batchSize;
