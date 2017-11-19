@@ -49,8 +49,8 @@ under the License.
 		</dependency>
 
 		<dependency>
-			<groupId>commons-configuration</groupId>
-			<artifactId>commons-configuration</artifactId>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-configuration2</artifactId>
 		</dependency>
 
 		<dependency>
@@ -245,7 +245,7 @@ under the License.
 									<include>com.esri.geometry:*</include>
 
 									<!-- flink-table dependencies -->
-									<include>commons-configuration:*</include>
+									<include>commons-configuration2:*</include>
 									<include>commons-lang:*</include>
 									<include>commons-codec:*</include>
 									<include>org.apache.commons:commons-lang3</include>
