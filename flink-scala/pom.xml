@@ -33,6 +33,15 @@ under the License.
 	<packaging>jar</packaging>
 
 	<dependencies>
+
+		<!-- core dependencies -->
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-annotations</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-core</artifactId>
@@ -42,6 +51,12 @@ under the License.
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-java</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-metrics-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -65,6 +80,16 @@ under the License.
 			<artifactId>scala-compiler</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.esotericsoftware.kryo</groupId>
+			<artifactId>kryo</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+
 		<!-- test dependencies -->
 
 		<dependency>
@@ -81,13 +106,6 @@ under the License.
 		</dependency>
 
 		<dependency>
-			<groupId>com.twitter</groupId>
-			<artifactId>chill_${scala.binary.version}</artifactId>
-			<version>${chill.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-core</artifactId>
 			<version>${project.version}</version>
@@ -98,12 +116,6 @@ under the License.
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.joda</groupId>
-			<artifactId>joda-convert</artifactId>
 			<scope>test</scope>
 		</dependency>
 

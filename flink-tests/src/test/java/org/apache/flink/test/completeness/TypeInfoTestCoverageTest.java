@@ -45,6 +45,9 @@ public class TypeInfoTestCoverageTest extends TestLogger {
 		Set<String> typeInfoTestNames = reflections.getSubTypesOf(TypeInformationTestBase.class)
 				.stream().map(Class::getName).collect(Collectors.toSet());
 
+		for (String typeInfoTestName : typeInfoTestNames) {
+			System.out.println(typeInfoTestName);
+		}
 		// check if a test exists for each type information
 		for (Class<? extends TypeInformation> typeInfo : typeInfos) {
 			// we skip abstract classes and inner classes to skip type information defined in test classes
@@ -57,7 +60,7 @@ public class TypeInfoTestCoverageTest extends TestLogger {
 					typeInfo.getName().contains("queryablestate")) {
 				continue;
 			}
-
+			System.out.println(typeInfo.getName());
 			final String testToFind = typeInfo.getName() + "Test";
 			if (!typeInfoTestNames.contains(testToFind)) {
 				fail("Could not find test '" + testToFind + "' that covers '" + typeInfo.getName() + "'.");
