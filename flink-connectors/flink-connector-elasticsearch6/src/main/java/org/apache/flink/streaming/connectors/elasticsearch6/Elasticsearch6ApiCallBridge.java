@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-package org.apache.flink.streaming.connectors.elasticsearch2;
+package org.apache.flink.streaming.connectors.elasticsearch6;
 
+import org.apache.flink.streaming.connectors.elasticsearch.BulkProcessorIndexer;
 import org.apache.flink.streaming.connectors.elasticsearch.ElasticsearchApiCallBridge;
 import org.apache.flink.streaming.connectors.elasticsearch.ElasticsearchSinkBase;
-import org.apache.flink.streaming.connectors.elasticsearch.util.ElasticsearchUtils;
+import org.apache.flink.streaming.connectors.elasticsearch.RequestIndexer;
 import org.apache.flink.util.Preconditions;
 
 import org.elasticsearch.action.bulk.BackoffPolicy;
@@ -27,9 +28,12 @@ import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.network.NetworkModule;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.transport.Netty4Plugin;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,35 +42,42 @@ import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Implementation of {@link ElasticsearchApiCallBridge} for Elasticsearch 2.x.
+ * Implementation of {@link ElasticsearchApiCallBridge} for Elasticsearch 5.3 and later versions.
  */
-public class Elasticsearch2ApiCallBridge extends ElasticsearchApiCallBridge {
+public class Elasticsearch6ApiCallBridge extends ElasticsearchApiCallBridge {
 
-	private static final long serialVersionUID = 2638252694744361079L;
+	private static final long serialVersionUID = -5222683870097809633L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(Elasticsearch2ApiCallBridge.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Elasticsearch6ApiCallBridge.class);
 
 	/**
 	 * User-provided transport addresses.
-	 *
-	 * <p>We are using {@link InetSocketAddress} because {@link TransportAddress} is not serializable in Elasticsearch 2.x.
+	 * <p>
+	 * <p>We are using {@link InetSocketAddress} because {@link TransportAddress} is not serializable in Elasticsearch 6.x.
 	 */
 	private final List<InetSocketAddress> transportAddresses;
 
-	Elasticsearch2ApiCallBridge(List<InetSocketAddress> transportAddresses) {
+	Elasticsearch6ApiCallBridge(List<InetSocketAddress> transportAddresses) {
 		Preconditions.checkArgument(transportAddresses != null && !transportAddresses.isEmpty());
 		this.transportAddresses = transportAddresses;
 	}
 
 	@Override
 	public Client createClient(Map<String, String> clientConfig) {
-		Settings settings = Settings.settingsBuilder().put(clientConfig).build();
+		Settings.Builder builder = Settings.builder();
+		for (Map.Entry<String, String> entry : clientConfig.entrySet()) {
+			builder.put(entry.getKey(), entry.getValue());
+		}
+		Settings settings = builder.put(NetworkModule.HTTP_TYPE_KEY, Netty4Plugin.NETTY_HTTP_TRANSPORT_NAME)
+			.put(NetworkModule.TRANSPORT_TYPE_KEY, Netty4Plugin.NETTY_TRANSPORT_NAME)
+			.build();
 
-		TransportClient transportClient = TransportClient.builder().settings(settings).build();
-		for (TransportAddress address : ElasticsearchUtils.convertInetSocketAddresses(transportAddresses)) {
-			transportClient.addTransportAddress(address);
+		TransportClient transportClient = new PreBuiltTransportClient(settings);
+		for (InetSocketAddress inetSocketAddress : transportAddresses) {
+			transportClient.addTransportAddress(new TransportAddress(inetSocketAddress));
 		}
 
 		// verify that we actually are connected to a cluster
@@ -116,9 +127,24 @@ public class Elasticsearch2ApiCallBridge extends ElasticsearchApiCallBridge {
 		builder.setBackoffPolicy(backoffPolicy);
 	}
 
+	/**
+	 * Creates an RequestIndexer instance.
+	 *
+	 * @param bulkProcessor      The instance of BulkProcessor
+	 * @param flushOnCheckpoint  If true, the producer will wait until all outstanding action requests have been sent to Elasticsearch.
+	 * @param numPendingRequests Number of pending action requests not yet acknowledged by Elasticsearch.
+	 * @return The created RequestIndexer.
+	 */
 	@Override
-	public void cleanup() {
-		// nothing to cleanup
+	public RequestIndexer createRequestIndex(
+		BulkProcessor bulkProcessor,
+		boolean flushOnCheckpoint,
+		AtomicLong numPendingRequests) {
+		return new BulkProcessorIndexer(bulkProcessor, flushOnCheckpoint, numPendingRequests);
 	}
 
+	@Override
+	public void cleanup() {
+
+	}
 }
