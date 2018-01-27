@@ -24,7 +24,7 @@ import org.apache.flink.api.java.typeutils.GenericTypeInfo
 import com.esotericsoftware.kryo.io.{Input, Output}
 import com.esotericsoftware.kryo.{Kryo, Serializer}
 
-import org.joda.time.LocalDate
+import java.time.LocalDate
 
 import org.junit.Test
 
@@ -93,7 +93,7 @@ class KryoGenericTypeSerializerTest {
 
   @Test
   def jodaSerialization(): Unit = {
-    val a = List(new LocalDate(1), new LocalDate(2))
+    val a = List(LocalDate.of(1970, 1, 1), LocalDate.of(2018, 1, 1))
     
     runTests(a)
   }
@@ -210,11 +210,11 @@ class LocalDateSerializer extends Serializer[LocalDate] with java.io.Serializabl
 
   override def write(kryo: Kryo, output: Output, obj: LocalDate) {
     output.writeInt(obj.getYear())
-    output.writeInt(obj.getMonthOfYear())
+    output.writeInt(obj.getMonthValue())
     output.writeInt(obj.getDayOfMonth())
   }
 
   override def read(kryo: Kryo, input: Input, typeClass: Class[LocalDate]) : LocalDate = {
-    new LocalDate(input.readInt(), input.readInt(), input.readInt())
+    LocalDate.of(input.readInt(), input.readInt(), input.readInt())
   }
 }

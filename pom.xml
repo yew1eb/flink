@@ -414,19 +414,6 @@ under the License.
 				<version>3.18.2-GA</version>
 			</dependency>
 
-			<!-- joda time is pulled in different versions by different transitive dependencies-->
-			<dependency>
-				<groupId>joda-time</groupId>
-				<artifactId>joda-time</artifactId>
-				<version>2.5</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.joda</groupId>
-				<artifactId>joda-convert</artifactId>
-				<version>1.7</version>
-			</dependency>
-
 			<!-- kryo used in different versions by Flink an chill -->
 			<dependency>
 				<groupId>com.esotericsoftware.kryo</groupId>

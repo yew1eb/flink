@@ -19,23 +19,25 @@
 package org.apache.flink.table.expressions
 
 import java.sql.Timestamp
+import java.time.{ZoneId, ZonedDateTime}
+import java.time.format.DateTimeFormatter
 
 import org.apache.flink.api.common.typeinfo.{TypeInformation, Types}
 import org.apache.flink.api.java.typeutils.RowTypeInfo
 import org.apache.flink.table.api.scala._
 import org.apache.flink.table.expressions.utils.ExpressionTestBase
 import org.apache.flink.types.Row
-import org.joda.time.{DateTime, DateTimeZone}
 import org.junit.Test
 
+
 class DateTimeFunctionTest extends ExpressionTestBase {
-  private val INSTANT = DateTime.parse("1990-01-02T03:04:05.678Z")
-  private val LOCAL_ZONE = DateTimeZone.getDefault
-  private val LOCAL_TIME = INSTANT.toDateTime(LOCAL_ZONE)
+  private val INSTANT = ZonedDateTime.parse("1990-01-02T03:04:05.678Z")
+  private val LOCAL_ZONE = ZoneId.systemDefault()
+  private val LOCAL_TIME = INSTANT.withZoneSameLocal(LOCAL_ZONE)
 
   @Test
   def testDateFormat(): Unit = {
-    val expected = LOCAL_TIME.toString("MM/dd/yyyy HH:mm:ss.SSSSSS")
+    val expected = LOCAL_TIME.format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss.SSSSSS"))
     testAllApis(
       dateFormat('f0, "%m/%d/%Y %H:%i:%s.%f"),
       "dateFormat(f0, \"%m/%d/%Y %H:%i:%s.%f\")",
@@ -45,7 +47,7 @@ class DateTimeFunctionTest extends ExpressionTestBase {
 
   @Test
   def testDateFormatNonConstantFormatter(): Unit = {
-    val expected = LOCAL_TIME.toString("MM/dd/yyyy")
+    val expected = LOCAL_TIME.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))
     testAllApis(
       dateFormat('f0, 'f1),
       "dateFormat(f0, f1)",
@@ -56,7 +58,7 @@ class DateTimeFunctionTest extends ExpressionTestBase {
   override def testData: Any = {
     val testData = new Row(2)
     // SQL expect a timestamp in the local timezone
-    testData.setField(0, new Timestamp(LOCAL_ZONE.convertLocalToUTC(INSTANT.getMillis, true)))
+    testData.setField(0, Timestamp.from(LOCAL_TIME.toOffsetDateTime.toInstant))
     testData.setField(1, "%m/%d/%Y")
     testData
   }

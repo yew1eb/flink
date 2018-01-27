@@ -42,12 +42,12 @@ import org.apache.flink.test.operators.util.CollectionDataSets.PojoContainingTup
 import org.apache.flink.test.util.MultipleProgramsTestBase;
 import org.apache.flink.util.Collector;
 
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -1136,10 +1136,10 @@ public class GroupReduceITCase extends MultipleProgramsTestBase {
 	@Test
 	public void testJodatimeDateTimeWithKryo() throws Exception {
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-		DataSet<Tuple2<Integer, DateTime>> ds = env.fromElements(new Tuple2<>(1, DateTime.now()));
-		DataSet<Tuple2<Integer, DateTime>> reduceDs = ds.groupBy("f1").sum(0).project(0);
+		DataSet<Tuple2<Integer, LocalDateTime>> ds = env.fromElements(new Tuple2<>(1, LocalDateTime.now()));
+		DataSet<Tuple2<Integer, LocalDateTime>> reduceDs = ds.groupBy("f1").sum(0).project(0);
 
-		List<Tuple2<Integer, DateTime>> result = reduceDs.collect();
+		List<Tuple2<Integer, LocalDateTime>> result = reduceDs.collect();
 
 		String expected = "1\n";
 

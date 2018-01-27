@@ -101,21 +101,6 @@ under the License.
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Joda and jackson are used to test that serialization and type extraction
-			work with types from those libraries -->
-
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.joda</groupId>
-			<artifactId>joda-convert</artifactId>
-			<scope>test</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-shaded-jackson</artifactId>

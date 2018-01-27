@@ -26,7 +26,7 @@ import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.api.java.typeutils.GenericTypeInfo;
 import org.apache.flink.api.java.typeutils.runtime.AbstractGenericTypeSerializerTest;
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.junit.Test;
 
 import com.esotericsoftware.kryo.Kryo;
@@ -42,8 +42,8 @@ public class KryoWithCustomSerializersTest extends AbstractGenericTypeSerializer
 	public void testJodaTime(){
 		Collection<LocalDate> b = new HashSet<LocalDate>();
 
-		b.add(new LocalDate(1L));
-		b.add(new LocalDate(2L));
+		b.add(LocalDate.of(1970,1,1));
+		b.add(LocalDate.of(2018,1,1));
 
 		runTests(b);
 	}
@@ -63,13 +63,13 @@ public class KryoWithCustomSerializersTest extends AbstractGenericTypeSerializer
 		@Override
 		public void write(Kryo kryo, Output output, LocalDate object) {
 			output.writeInt(object.getYear());
-			output.writeInt(object.getMonthOfYear());
+			output.writeInt(object.getMonthValue());
 			output.writeInt(object.getDayOfMonth());
 		}
 		
 		@Override
 		public LocalDate read(Kryo kryo, Input input, Class<LocalDate> type) {
-			return new LocalDate(input.readInt(), input.readInt(), input.readInt());
+			return LocalDate.of(input.readInt(), input.readInt(), input.readInt());
 		}
 	}
 }

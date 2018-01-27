@@ -27,7 +27,7 @@ import org.apache.flink.api.java.typeutils.runtime.AbstractGenericTypeSerializer
 import org.apache.flink.api.scala._
 import org.apache.flink.api.scala.typeutils.CaseClassSerializer
 import org.apache.flink.util.StringUtils
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import org.junit.Assert._
 import org.junit.{Assert, Test}
 
@@ -120,12 +120,12 @@ class TupleSerializerTest {
     val rnd: Random = new Random(807346528946L)
 
     val testTuples = Array(
-      (StringUtils.getRandomString(rnd, 10, 100), new LocalDate(rnd.nextInt)),
-      (StringUtils.getRandomString(rnd, 10, 100), new LocalDate(rnd.nextInt)),
-      (StringUtils.getRandomString(rnd, 10, 100), new LocalDate(rnd.nextInt)),
+      (StringUtils.getRandomString(rnd, 10, 100), LocalDate.ofEpochDay(rnd.nextInt)),
+      (StringUtils.getRandomString(rnd, 10, 100), LocalDate.ofEpochDay(rnd.nextInt)),
+      (StringUtils.getRandomString(rnd, 10, 100), LocalDate.ofEpochDay(rnd.nextInt)),
       ("", rnd.nextDouble),
-      (StringUtils.getRandomString(rnd, 10, 100), new LocalDate(rnd.nextInt)),
-      (StringUtils.getRandomString(rnd, 10, 100), new LocalDate(rnd.nextInt)))
+      (StringUtils.getRandomString(rnd, 10, 100), LocalDate.ofEpochDay(rnd.nextInt)),
+      (StringUtils.getRandomString(rnd, 10, 100), LocalDate.ofEpochDay(rnd.nextInt)))
       
     runTests(testTuples, -1)
   }
