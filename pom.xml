@@ -1320,6 +1320,12 @@ under the License.
 								</filter>
 							</filters>
 							<artifactSet>
+								<excludes>
+									<exclude>io.netty:*</exclude>
+									<exclude>com.google.guava:*</exclude>
+									<exclude>com.fasterxml.jackson.*:*</exclude>
+									<exclude>org.ow2.asm:*</exclude>
+								</excludes>
 								<includes>
 									<!-- Unfortunately, the next line is necessary for now to force the execution
 									of the Shade plugin upon all sub modules. This will generate effective poms,
