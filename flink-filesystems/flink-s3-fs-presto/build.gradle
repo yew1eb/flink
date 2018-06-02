@@ -1,0 +1,36 @@
+
+description = 'flink-s3-fs-presto'
+dependencies {
+  compile project(':flink-filesystems:flink-hadoop-fs')
+    compile(group: 'com.facebook.presto', name: 'presto-hive', version:'0.185') {
+exclude(module: 'hive-dwrf')
+exclude(module: 'hive-apache')
+exclude(module: 'presto-spi')
+exclude(module: 'presto-plugin-toolkit')
+exclude(module: 'presto-orc')
+exclude(module: 'presto-rcfile')
+exclude(module: 'slf4j-jdk14')
+exclude(module: 'log4j-over-slf4j')
+exclude(module: 'jcl-over-slf4j')
+exclude(module: 'libthrift')
+exclude(module: 'json')
+exclude(module: 'bootstrap')
+exclude(module: 'concurrent')
+exclude(module: 'event')
+exclude(module: 'http-client')
+exclude(module: 'aircompressor')
+exclude(module: 'javax.inject')
+exclude(module: 'guice')
+exclude(module: 'guice-multibindings')
+exclude(module: 'fastutil')
+exclude(module: 'snappy-java')
+exclude(module: 'bval-jsr')
+exclude(module: 'validation-api')
+exclude(module: 'jol-core')
+exclude(module: 'cglib-nodep')
+exclude(module: 'annotations')
+    }
+    compile group: 'com.facebook.presto.hadoop', name: 'hadoop-apache2', version:'2.7.3-1'
+  testCompile project(':flink-core')
+  providedCompile project(':flink-core')
+}

@@ -1,0 +1,14 @@
+
+description = 'flink-queryable-state-client-java'
+dependencies {
+    compile group: 'org.apache.flink', name: 'flink-shaded-netty', version:'4.0.27.Final-2.0'
+    compile group: 'org.apache.flink', name: 'flink-shaded-guava', version:'18.0-2.0'
+  testCompile project(':flink-core')
+  providedCompile project(':flink-core')
+}
+
+task packageTests(type: Jar) {
+  from sourceSets.test.output
+  classifier = 'tests'
+}
+artifacts.archives packageTests

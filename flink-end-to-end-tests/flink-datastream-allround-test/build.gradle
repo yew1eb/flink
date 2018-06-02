@@ -1,0 +1,8 @@
+
+description = 'flink-datastream-allround-test'
+dependencies {
+  compile project(':flink-state-backends:flink-statebackend-rocksdb_2.11')
+  compile project(':flink-formats:flink-avro')
+  providedCompile project(':flink-core')
+  providedCompile project(':flink-streaming-java_2.11')
+}

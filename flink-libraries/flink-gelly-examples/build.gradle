@@ -1,0 +1,17 @@
+
+description = 'flink-gelly-examples'
+dependencies {
+  compile project(':flink-java')
+  compile project(':flink-clients_2.11')
+  compile project(':flink-scala_2.11')
+  compile project(':flink-libraries:flink-gelly_2.11')
+  compile project(':flink-libraries:flink-gelly-scala_2.11')
+    compile(group: 'org.apache.flink', name: 'flink-shaded-jackson', version:'2.7.9-3.0') {
+exclude(module: 'jackson-core')
+exclude(module: 'jackson-annotations')
+exclude(module: 'jackson-databind')
+exclude(module: 'jackson-dataformat-yaml')
+    }
+  testCompile project(':flink-test-utils-parent:flink-test-utils_2.11')
+  testCompile project(':flink-tests_2.11')
+}

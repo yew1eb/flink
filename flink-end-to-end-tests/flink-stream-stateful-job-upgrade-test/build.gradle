@@ -1,0 +1,7 @@
+
+description = 'flink-stream-stateful-job-upgrade-test'
+dependencies {
+  compile project(':flink-end-to-end-tests:flink-datastream-allround-test')
+  providedCompile project(':flink-core')
+  providedCompile project(':flink-streaming-java_2.11')
+}

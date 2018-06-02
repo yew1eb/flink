@@ -1,0 +1,14 @@
+
+description = 'flink-json'
+dependencies {
+  testCompile project(':flink-libraries:flink-table_2.11')
+    testCompile group: 'org.scala-lang', name: 'scala-compiler', version:'2.11.12'
+    compileOnly(group: 'org.apache.flink', name: 'flink-shaded-jackson', version:'2.7.9-3.0') {
+exclude(module: 'jackson-core')
+exclude(module: 'jackson-annotations')
+exclude(module: 'jackson-databind')
+exclude(module: 'jackson-dataformat-yaml')
+    }
+  providedCompile project(':flink-core')
+  providedCompile project(':flink-libraries:flink-table_2.11')
+}

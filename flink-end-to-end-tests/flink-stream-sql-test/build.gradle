@@ -1,0 +1,8 @@
+
+description = 'flink-stream-sql-test'
+dependencies {
+  compile project(':flink-connectors:flink-connector-filesystem_2.11')
+  providedCompile project(':flink-core')
+  providedCompile project(':flink-streaming-scala_2.11')
+  providedCompile project(':flink-libraries:flink-table_2.11')
+}

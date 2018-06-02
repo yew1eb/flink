@@ -1,0 +1,19 @@
+
+description = 'flink-sql-client'
+dependencies {
+  compile project(':flink-core')
+  compile project(':flink-clients_2.11')
+  compile project(':flink-streaming-scala_2.11')
+  compile project(':flink-libraries:flink-table_2.11')
+    compile group: 'org.jline', name: 'jline-terminal', version:'3.5.2'
+    compile group: 'org.jline', name: 'jline-reader', version:'3.5.2'
+    compile(group: 'org.apache.flink', name: 'flink-shaded-jackson', version:'2.7.9-3.0') {
+exclude(module: 'jackson-core')
+exclude(module: 'jackson-annotations')
+exclude(module: 'jackson-databind')
+exclude(module: 'jackson-dataformat-yaml')
+    }
+  testCompile project(':flink-runtime_2.11')
+  testCompile project(':flink-test-utils-parent:flink-test-utils_2.11')
+  testCompile project(':flink-clients_2.11')
+}

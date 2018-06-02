@@ -1,0 +1,12 @@
+
+description = 'flink-gelly-scala'
+dependencies {
+  compile project(':flink-libraries:flink-gelly_2.11')
+  testCompile project(':flink-tests_2.11')
+  testCompile project(':flink-test-utils-parent:flink-test-utils_2.11')
+  providedCompile project(':flink-scala_2.11')
+  providedCompile project(':flink-clients_2.11')
+    compileOnly group: 'org.scala-lang', name: 'scala-reflect', version:'2.11.12'
+    compileOnly group: 'org.scala-lang', name: 'scala-library', version:'2.11.12'
+    compileOnly group: 'org.scala-lang', name: 'scala-compiler', version:'2.11.12'
+}

@@ -1,0 +1,29 @@
+
+description = 'flink-s3-fs-hadoop'
+dependencies {
+  compile project(':flink-filesystems:flink-hadoop-fs')
+    compile(group: 'org.apache.hadoop', name: 'hadoop-client', version:'2.8.1') {
+exclude(module: 'hadoop-mapreduce-client-core')
+exclude(module: 'hadoop-yarn-api')
+exclude(module: 'hadoop-mapreduce-client-jobclient')
+exclude(module: 'hadoop-mapreduce-client-app')
+exclude(module: 'avro')
+exclude(module: 'jsp-api')
+exclude(module: 'apacheds-kerberos-codec')
+exclude(module: 'curator-client')
+exclude(module: 'curator-framework')
+exclude(module: 'curator-recipes')
+exclude(module: 'zookeeper')
+    }
+    compile(group: 'org.apache.hadoop', name: 'hadoop-aws', version:'2.8.1') {
+exclude(module: 'avro')
+exclude(module: 'jackson-annotations')
+exclude(module: 'jackson-core')
+exclude(module: 'jackson-databind')
+    }
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-core', version:'1.11.95'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-kms', version:'1.11.95'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version:'1.11.95'
+  testCompile project(':flink-core')
+  providedCompile project(':flink-core')
+}

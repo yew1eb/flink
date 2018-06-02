@@ -1,0 +1,6 @@
+
+description = 'flink-elasticsearch2-test'
+dependencies {
+  compile project(':flink-connectors:flink-connector-elasticsearch2_2.11')
+  providedCompile project(':flink-streaming-java_2.11')
+}

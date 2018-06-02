@@ -1,0 +1,10 @@
+
+description = 'flink-streaming-python'
+dependencies {
+    compile group: 'org.python', name: 'jython-standalone', version:'2.7.0'
+  testCompile project(':flink-test-utils-parent:flink-test-utils_2.11')
+  providedCompile project(':flink-core')
+  providedCompile project(':flink-java')
+  providedCompile project(':flink-streaming-java_2.11')
+  providedCompile project(':flink-runtime_2.11')
+}

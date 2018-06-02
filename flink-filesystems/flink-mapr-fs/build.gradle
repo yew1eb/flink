@@ -1,0 +1,7 @@
+
+description = 'flink-mapr-fs'
+dependencies {
+  compile project(':flink-core')
+  compile project(':flink-filesystems:flink-hadoop-fs')
+    compile group: 'com.mapr.hadoop', name: 'maprfs', version:'5.2.1-mapr'
+}

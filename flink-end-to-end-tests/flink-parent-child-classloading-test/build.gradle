@@ -1,0 +1,6 @@
+
+description = 'flink-parent-child-classloading-test'
+dependencies {
+  providedCompile project(':flink-core')
+  providedCompile project(':flink-streaming-java_2.11')
+}

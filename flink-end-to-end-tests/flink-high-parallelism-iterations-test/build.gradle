@@ -1,0 +1,7 @@
+
+description = 'flink-high-parallelism-iterations-test'
+dependencies {
+  compile project(':flink-examples:flink-examples-batch_2.11')
+  providedCompile project(':flink-core')
+  providedCompile project(':flink-java')
+}

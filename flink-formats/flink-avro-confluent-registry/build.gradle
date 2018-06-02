@@ -1,0 +1,10 @@
+
+description = ''
+dependencies {
+    compile(group: 'io.confluent', name: 'kafka-schema-registry-client', version:'3.3.1') {
+exclude(module: 'avro')
+exclude(module: 'slf4j-log4j12')
+    }
+  compile project(':flink-formats:flink-avro')
+  providedCompile project(':flink-core')
+}

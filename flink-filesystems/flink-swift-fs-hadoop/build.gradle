@@ -1,0 +1,22 @@
+
+description = 'flink-swift-fs-hadoop'
+dependencies {
+  compile project(':flink-filesystems:flink-hadoop-fs')
+    compile(group: 'org.apache.hadoop', name: 'hadoop-client', version:'2.8.1') {
+exclude(module: 'hadoop-mapreduce-client-core')
+exclude(module: 'hadoop-yarn-api')
+exclude(module: 'hadoop-mapreduce-client-jobclient')
+exclude(module: 'hadoop-mapreduce-client-app')
+exclude(module: 'avro')
+exclude(module: 'jsp-api')
+exclude(module: 'apacheds-kerberos-codec')
+exclude(module: 'curator-client')
+exclude(module: 'curator-framework')
+exclude(module: 'curator-recipes')
+exclude(module: 'zookeeper')
+    }
+    compile(group: 'org.apache.hadoop', name: 'hadoop-openstack', version:'2.8.1') {
+exclude(module: 'hadoop-common')
+    }
+  providedCompile project(':flink-core')
+}

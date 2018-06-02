@@ -1,0 +1,10 @@
+
+description = 'flink-gelly'
+dependencies {
+  testCompile project(':flink-test-utils-parent:flink-test-utils_2.11')
+  testCompile project(':flink-core')
+  testCompile project(':flink-optimizer_2.11')
+  providedCompile project(':flink-java')
+  providedCompile project(':flink-clients_2.11')
+    compileOnly group: 'org.apache.commons', name: 'commons-lang3', version:'3.3.2'
+}

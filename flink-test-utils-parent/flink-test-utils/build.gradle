@@ -1,0 +1,14 @@
+
+description = 'flink-test-utils'
+dependencies {
+  compile project(':flink-test-utils-parent:flink-test-utils-junit')
+  compile project(':flink-runtime_2.11')
+  compile project(':flink-clients_2.11')
+  compile project(':flink-streaming-java_2.11')
+    compile group: 'io.netty', name: 'netty', version:'3.10.6.Final'
+    compile group: 'org.apache.curator', name: 'curator-test', version:'2.12.0'
+    compile(group: 'org.apache.hadoop', name: 'hadoop-minikdc', version:'2.7.2') {
+exclude(module: 'log4j')
+exclude(module: 'slf4j-log4j12')
+    }
+}

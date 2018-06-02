@@ -1,0 +1,15 @@
+
+description = 'flink-java8'
+dependencies {
+  compile project(':flink-java')
+  compile project(':flink-streaming-java_2.11')
+  compile project(':flink-examples:flink-examples-batch_2.11')
+  testCompile project(':flink-test-utils-parent:flink-test-utils_2.11')
+  testCompile project(':flink-libraries:flink-cep_2.11')
+}
+
+task packageTests(type: Jar) {
+  from sourceSets.test.output
+  classifier = 'tests'
+}
+artifacts.archives packageTests

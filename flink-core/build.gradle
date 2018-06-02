@@ -1,0 +1,28 @@
+
+description = 'flink-core'
+dependencies {
+  compile project(':flink-annotations')
+  compile project(':flink-metrics:flink-metrics-core')
+    compile group: 'org.apache.flink', name: 'flink-shaded-asm', version:'5.0.4-2.0'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.3.2'
+    compile group: 'com.esotericsoftware.kryo', name: 'kryo', version:'2.24.0'
+    compile group: 'commons-collections', name: 'commons-collections', version:'3.2.2'
+    compile group: 'org.apache.commons', name: 'commons-compress', version:'1.4.1'
+  testCompile project(':flink-test-utils-parent:flink-test-utils-junit')
+    testCompile group: 'commons-io', name: 'commons-io', version:'2.4'
+    testCompile group: 'joda-time', name: 'joda-time', version:'2.5'
+    testCompile group: 'org.joda', name: 'joda-convert', version:'1.7'
+    testCompile(group: 'org.apache.flink', name: 'flink-shaded-jackson', version:'2.7.9-3.0') {
+exclude(module: 'jackson-core')
+exclude(module: 'jackson-annotations')
+exclude(module: 'jackson-databind')
+exclude(module: 'jackson-dataformat-yaml')
+    }
+    testCompile group: 'org.projectlombok', name: 'lombok', version:'1.16.20'
+}
+
+task packageTests(type: Jar) {
+  from sourceSets.test.output
+  classifier = 'tests'
+}
+artifacts.archives packageTests

@@ -1,0 +1,44 @@
+
+description = 'flink-tests'
+dependencies {
+    compile group: 'org.apache.flink', name: 'flink-shaded-guava', version:'18.0-2.0'
+  testCompile project(':flink-core')
+  testCompile project(':flink-core')
+  testCompile project(':flink-shaded-hadoop:flink-shaded-hadoop2')
+    testCompile(group: 'org.apache.flink', name: 'flink-shaded-jackson', version:'2.7.9-3.0') {
+exclude(module: 'jackson-core')
+exclude(module: 'jackson-annotations')
+exclude(module: 'jackson-databind')
+exclude(module: 'jackson-dataformat-yaml')
+    }
+  testCompile project(':flink-streaming-java_2.11')
+  testCompile project(':flink-optimizer_2.11')
+  testCompile project(':flink-runtime_2.11')
+  testCompile project(':flink-runtime-web_2.11')
+  testCompile project(':flink-runtime-web_2.11')
+  testCompile project(':flink-clients_2.11')
+  testCompile project(':flink-java')
+  testCompile project(':flink-scala_2.11')
+  testCompile project(':flink-scala_2.11')
+  testCompile project(':flink-test-utils-parent:flink-test-utils-junit')
+  testCompile project(':flink-test-utils-parent:flink-test-utils_2.11')
+  testCompile project(':flink-examples:flink-examples-batch_2.11')
+  testCompile project(':flink-java')
+  testCompile project(':flink-connectors:flink-hadoop-compatibility_2.11')
+  testCompile project(':flink-connectors:flink-hadoop-compatibility_2.11')
+  testCompile project(':flink-optimizer_2.11')
+  testCompile project(':flink-runtime_2.11')
+    testCompile group: 'org.apache.curator', name: 'curator-test', version:'2.12.0'
+    testCompile group: 'org.scalatest', name: 'scalatest_2.11', version:'2.2.2'
+    testCompile group: 'com.typesafe.akka', name: 'akka-testkit_2.11', version:'2.4.20'
+    testCompile group: 'joda-time', name: 'joda-time', version:'2.5'
+    testCompile group: 'org.joda', name: 'joda-convert', version:'1.7'
+  testCompile project(':flink-state-backends:flink-statebackend-rocksdb_2.11')
+    testCompile group: 'org.reflections', name: 'reflections', version:'0.9.10'
+}
+
+task packageTests(type: Jar) {
+  from sourceSets.test.output
+  classifier = 'tests'
+}
+artifacts.archives packageTests

@@ -1,0 +1,5 @@
+
+description = 'flink-shaded-curator'
+dependencies {
+    compile group: 'org.apache.curator', name: 'curator-recipes', version:'2.12.0'
+}

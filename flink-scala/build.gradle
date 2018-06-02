@@ -1,0 +1,22 @@
+
+description = 'flink-scala'
+dependencies {
+  compile project(':flink-core')
+  compile project(':flink-java')
+    compile group: 'org.apache.flink', name: 'flink-shaded-asm', version:'5.0.4-2.0'
+    compile group: 'org.scala-lang', name: 'scala-reflect', version:'2.11.12'
+    compile group: 'org.scala-lang', name: 'scala-library', version:'2.11.12'
+    compile group: 'org.scala-lang', name: 'scala-compiler', version:'2.11.12'
+    testCompile group: 'org.scalatest', name: 'scalatest_2.11', version:'2.2.2'
+  testCompile project(':flink-test-utils-parent:flink-test-utils-junit')
+    testCompile group: 'com.twitter', name: 'chill_2.11', version:'0.7.4'
+  testCompile project(':flink-core')
+    testCompile group: 'joda-time', name: 'joda-time', version:'2.5'
+    testCompile group: 'org.joda', name: 'joda-convert', version:'1.7'
+}
+
+task packageTests(type: Jar) {
+  from sourceSets.test.output
+  classifier = 'tests'
+}
+artifacts.archives packageTests

@@ -1,0 +1,13 @@
+
+description = 'flink-orc'
+dependencies {
+    compile(group: 'org.apache.orc', name: 'orc-core', version:'1.4.3') {
+exclude(module: 'hadoop-common')
+    }
+  testCompile project(':flink-test-utils-parent:flink-test-utils_2.11')
+  testCompile project(':flink-clients_2.11')
+  testCompile project(':flink-core')
+  providedCompile project(':flink-streaming-scala_2.11')
+  providedCompile project(':flink-libraries:flink-table_2.11')
+  providedCompile project(':flink-shaded-hadoop:flink-shaded-hadoop2')
+}

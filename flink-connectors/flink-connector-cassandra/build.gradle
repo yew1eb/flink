@@ -1,0 +1,25 @@
+
+description = 'flink-connector-cassandra'
+dependencies {
+    compile(group: 'com.datastax.cassandra', name: 'cassandra-driver-core', version:'3.0.0') {
+exclude(module: 'log4j-over-slf4j')
+exclude(module: 'logback-classic')
+    }
+    compile(group: 'com.datastax.cassandra', name: 'cassandra-driver-mapping', version:'3.0.0') {
+exclude(module: 'log4j-over-slf4j')
+exclude(module: 'logback-classic')
+    }
+    compile group: 'com.google.guava', name: 'guava', version:'18.0'
+  testCompile project(':flink-runtime_2.11')
+  testCompile project(':flink-streaming-java_2.11')
+  testCompile project(':flink-tests_2.11')
+  testCompile project(':flink-test-utils-parent:flink-test-utils_2.11')
+    testCompile(group: 'org.apache.cassandra', name: 'cassandra-all', version:'2.2.5') {
+exclude(module: 'log4j-over-slf4j')
+exclude(module: 'logback-classic')
+    }
+  providedCompile project(':flink-streaming-java_2.11')
+  providedCompile project(':flink-streaming-scala_2.11')
+    compileOnly group: 'org.scala-lang', name: 'scala-library', version:'2.11.12'
+  providedCompile project(':flink-libraries:flink-table_2.11')
+}

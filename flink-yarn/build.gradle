@@ -1,0 +1,28 @@
+
+description = 'flink-yarn'
+dependencies {
+  compile project(':flink-runtime_2.11')
+  compile project(':flink-clients_2.11')
+  compile project(':flink-shaded-hadoop:flink-shaded-hadoop2')
+    compile(group: 'com.typesafe.akka', name: 'akka-camel_2.11', version:'2.4.20') {
+exclude(module: 'jaxb-core')
+exclude(module: 'jaxb-impl')
+    }
+  testCompile project(':flink-test-utils-parent:flink-test-utils_2.11')
+  testCompile project(':flink-test-utils-parent:flink-test-utils-junit')
+  testCompile project(':flink-runtime_2.11')
+    testCompile group: 'org.apache.hadoop', name: 'hadoop-hdfs', version:'2.4.1'
+    testCompile group: 'org.apache.hadoop', name: 'hadoop-common', version:'2.4.1'
+    testCompile group: 'com.typesafe.akka', name: 'akka-testkit_2.11', version:'2.4.20'
+    compileOnly group: 'com.typesafe.akka', name: 'akka-actor_2.11', version:'2.4.20'
+    compileOnly(group: 'com.typesafe.akka', name: 'akka-remote_2.11', version:'2.4.20') {
+exclude(module: 'aeron-driver')
+exclude(module: 'aeron-client')
+    }
+}
+
+task packageTests(type: Jar) {
+  from sourceSets.test.output
+  classifier = 'tests'
+}
+artifacts.archives packageTests

@@ -1,0 +1,21 @@
+
+description = 'flink-optimizer'
+dependencies {
+  compile project(':flink-core')
+  compile project(':flink-runtime_2.11')
+  compile project(':flink-java')
+    compile group: 'org.apache.flink', name: 'flink-shaded-guava', version:'18.0-2.0'
+    compile(group: 'org.apache.flink', name: 'flink-shaded-jackson', version:'2.7.9-3.0') {
+exclude(module: 'jackson-core')
+exclude(module: 'jackson-annotations')
+exclude(module: 'jackson-databind')
+exclude(module: 'jackson-dataformat-yaml')
+    }
+  testCompile project(':flink-test-utils-parent:flink-test-utils-junit')
+}
+
+task packageTests(type: Jar) {
+  from sourceSets.test.output
+  classifier = 'tests'
+}
+artifacts.archives packageTests

@@ -1,0 +1,9 @@
+
+description = 'flink-hadoop-fs'
+dependencies {
+  compile project(':flink-core')
+  compile project(':flink-shaded-hadoop:flink-shaded-hadoop2')
+  testCompile project(':flink-core')
+    testCompile group: 'org.apache.hadoop', name: 'hadoop-hdfs', version:'2.4.1'
+    testCompile group: 'org.apache.hadoop', name: 'hadoop-common', version:'2.4.1'
+}

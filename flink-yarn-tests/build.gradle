@@ -1,0 +1,29 @@
+
+description = 'flink-yarn-tests'
+dependencies {
+  compile project(':flink-shaded-hadoop:flink-shaded-yarn-tests')
+    compile group: 'org.apache.hadoop', name: 'hadoop-minikdc', version:'2.7.2'
+  testCompile project(':flink-test-utils-parent:flink-test-utils-junit')
+    testCompile(group: 'org.apache.flink', name: 'flink-shaded-jackson', version:'2.7.9-3.0') {
+exclude(module: 'jackson-core')
+exclude(module: 'jackson-annotations')
+exclude(module: 'jackson-databind')
+exclude(module: 'jackson-dataformat-yaml')
+    }
+  testCompile project(':flink-test-utils-parent:flink-test-utils_2.11')
+  testCompile project(':flink-runtime_2.11')
+  testCompile project(':flink-clients_2.11')
+  testCompile project(':flink-streaming-java_2.11')
+  testCompile project(':flink-yarn_2.11')
+  testCompile project(':flink-yarn_2.11')
+  testCompile project(':flink-examples:flink-examples-batch_2.11')
+  testCompile project(':flink-examples:flink-examples-streaming_2.11')
+  testCompile project(':flink-shaded-hadoop:flink-shaded-hadoop2')
+    testCompile group: 'com.typesafe.akka', name: 'akka-testkit_2.11', version:'2.4.20'
+}
+
+task packageTests(type: Jar) {
+  from sourceSets.test.output
+  classifier = 'tests'
+}
+artifacts.archives packageTests

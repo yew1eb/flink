@@ -1,0 +1,6 @@
+
+description = 'flink-distributed-cache-via-blob'
+dependencies {
+  compile project(':flink-core')
+  compile project(':flink-streaming-java_2.11')
+}

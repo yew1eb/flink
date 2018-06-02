@@ -1,0 +1,6 @@
+
+description = 'flink-dataset-allround-test'
+dependencies {
+  providedCompile project(':flink-core')
+  providedCompile project(':flink-java')
+}

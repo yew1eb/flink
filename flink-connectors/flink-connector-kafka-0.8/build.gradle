@@ -1,0 +1,31 @@
+
+description = 'flink-connector-kafka-0.8'
+dependencies {
+  compile project(':flink-connectors:flink-connector-kafka-base_2.11')
+  compile project(':flink-formats:flink-avro')
+  compile project(':flink-formats:flink-json')
+    compile(group: 'org.apache.kafka', name: 'kafka_2.11', version:'0.8.2.2') {
+exclude(module: 'jmxri')
+exclude(module: 'jmxtools')
+exclude(module: 'log4j')
+exclude(module: 'slf4j-simple')
+exclude(module: 'jopt-simple')
+exclude(module: 'scala-reflect')
+exclude(module: 'scala-compiler')
+exclude(module: 'metrics-annotation')
+exclude(module: 'snappy-java')
+    }
+  testCompile project(':flink-streaming-java_2.11')
+  testCompile project(':flink-formats:flink-avro')
+  testCompile project(':flink-formats:flink-json')
+    testCompile group: 'org.apache.curator', name: 'curator-test', version:'2.12.0'
+  testCompile project(':flink-metrics:flink-metrics-jmx')
+  testCompile project(':flink-connectors:flink-connector-kafka-base_2.11')
+  testCompile project(':flink-runtime_2.11')
+  testCompile project(':flink-test-utils-parent:flink-test-utils_2.11')
+  testCompile project(':flink-tests_2.11')
+  testCompile project(':flink-libraries:flink-table_2.11')
+  providedCompile project(':flink-streaming-java_2.11')
+  providedCompile project(':flink-shaded-curator')
+  providedCompile project(':flink-libraries:flink-table_2.11')
+}

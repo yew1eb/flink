@@ -1,0 +1,7 @@
+
+description = 'flink-local-recovery-and-allocation-test'
+dependencies {
+  compile project(':flink-core')
+  compile project(':flink-streaming-java_2.11')
+  compile project(':flink-state-backends:flink-statebackend-rocksdb_2.11')
+}

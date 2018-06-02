@@ -34,3 +34,5 @@ out/
 *.iws
 tools/flink
 tools/flink-*
+!/settings.gradle
+/settings.gradle

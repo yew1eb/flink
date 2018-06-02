@@ -1,0 +1,6 @@
+
+description = 'flink-examples-table'
+dependencies {
+  compile project(':flink-libraries:flink-table_2.11')
+  compile project(':flink-streaming-scala_2.11')
+}

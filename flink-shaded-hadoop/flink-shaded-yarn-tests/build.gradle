@@ -1,0 +1,9 @@
+
+description = 'flink-shaded-yarn-tests'
+dependencies {
+    compile group: 'org.apache.hadoop', name: 'hadoop-common', version:'2.4.1'
+    compile group: 'org.apache.hadoop', name: 'hadoop-yarn-server-tests', version:'2.4.1'
+    compile group: 'org.apache.hadoop', name: 'hadoop-yarn-server-tests', version:'2.4.1'
+    compile group: 'org.apache.hadoop', name: 'hadoop-minicluster', version:'2.4.1'
+    compile group: 'org.apache.hadoop', name: 'hadoop-yarn-server-resourcemanager', version:'2.4.1'
+}

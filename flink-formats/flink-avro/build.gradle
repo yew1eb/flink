@@ -1,0 +1,17 @@
+
+description = 'flink-avro'
+dependencies {
+    compile group: 'org.apache.avro', name: 'avro', version:'1.8.2'
+  testCompile project(':flink-libraries:flink-table_2.11')
+  testCompile project(':flink-streaming-scala_2.11')
+  testCompile project(':flink-test-utils-parent:flink-test-utils_2.11')
+  testCompile project(':flink-core')
+  providedCompile project(':flink-core')
+  providedCompile project(':flink-libraries:flink-table_2.11')
+}
+
+task packageTests(type: Jar) {
+  from sourceSets.test.output
+  classifier = 'tests'
+}
+artifacts.archives packageTests

@@ -1,0 +1,5 @@
+
+description = 'flink-shaded-hadoop2-uber'
+dependencies {
+  compile project(':flink-shaded-hadoop:flink-shaded-hadoop2')
+}

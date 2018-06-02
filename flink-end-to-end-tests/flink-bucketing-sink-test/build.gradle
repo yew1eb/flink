@@ -1,0 +1,8 @@
+
+description = 'flink-bucketing-sink-test'
+dependencies {
+  compile project(':flink-connectors:flink-connector-filesystem_2.11')
+  providedCompile project(':flink-core')
+  providedCompile project(':flink-streaming-java_2.11')
+  providedCompile project(':flink-shaded-hadoop:flink-shaded-hadoop2')
+}
