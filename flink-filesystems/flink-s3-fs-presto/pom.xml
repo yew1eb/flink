@@ -329,6 +329,13 @@ under the License.
 										<exclude>core-site.xml</exclude>
 									</excludes>
 								</filter>
+
+								<filter>
+									<artifact>org.apache.flink:flink-hadoop-fs</artifact>
+									<excludes>
+										<exclude>resources/META-INF/services/org.apache.flink.core.fs.FileSystemFactory</exclude>
+									</excludes>
+								</filter>
 							</filters>
 						</configuration>
 					</execution>
