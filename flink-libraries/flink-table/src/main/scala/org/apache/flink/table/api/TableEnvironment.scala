@@ -21,12 +21,13 @@ package org.apache.flink.table.api
 import _root_.java.lang.reflect.Modifier
 import _root_.java.util.concurrent.atomic.AtomicInteger
 
-import com.google.common.collect.ImmutableList
+import com.google.common.collect.{ImmutableList, Lists}
 import org.apache.calcite.config.Lex
 import org.apache.calcite.jdbc.CalciteSchema
 import org.apache.calcite.plan.RelOptPlanner.CannotPlanException
 import org.apache.calcite.plan.hep.{HepMatchOrder, HepPlanner, HepProgramBuilder}
 import org.apache.calcite.plan.{RelOptPlanner, RelOptUtil, RelTraitSet}
+import org.apache.calcite.prepare.CalciteCatalogReader
 import org.apache.calcite.rel.RelNode
 import org.apache.calcite.rel.`type`.RelDataType
 import org.apache.calcite.schema.SchemaPlus
@@ -46,7 +47,7 @@ import org.apache.flink.streaming.api.environment.{StreamExecutionEnvironment =>
 import org.apache.flink.streaming.api.scala.{StreamExecutionEnvironment => ScalaStreamExecEnv}
 import org.apache.flink.table.api.java.{BatchTableEnvironment => JavaBatchTableEnv, StreamTableEnvironment => JavaStreamTableEnv}
 import org.apache.flink.table.api.scala.{BatchTableEnvironment => ScalaBatchTableEnv, StreamTableEnvironment => ScalaStreamTableEnv}
-import org.apache.flink.table.calcite.{FlinkPlannerImpl, FlinkRelBuilder, FlinkTypeFactory, FlinkTypeSystem}
+import org.apache.flink.table.calcite._
 import org.apache.flink.table.catalog.{ExternalCatalog, ExternalCatalogSchema}
 import org.apache.flink.table.codegen.{ExpressionReducer, FunctionCodeGenerator, GeneratedFunction}
 import org.apache.flink.table.descriptors.{ConnectorDescriptor, TableDescriptor}
@@ -716,11 +717,11 @@ abstract class TableEnvironment(val config: TableConfig) {
         // get query result as Table
         val queryResult = new Table(this, LogicalRelNode(planner.rel(query).rel))
 
-        // get name of sink table
-        val targetTableName = insert.getTargetTable.asInstanceOf[SqlIdentifier].names.get(0)
+        // get name of sink table path
+        val targetTablePath = insert.getTargetTable.asInstanceOf[SqlIdentifier].names
 
         // insert query result into sink table
-        insertInto(queryResult, targetTableName, config)
+        insertInto(queryResult, targetTablePath.toArray(Array[String]()), config)
       case _ =>
         throw new TableException(
           "Unsupported SQL query! sqlUpdate() only accepts SQL statements of type INSERT.")
@@ -737,6 +738,7 @@ abstract class TableEnvironment(val config: TableConfig) {
     */
   private[flink] def writeToSink[T](table: Table, sink: TableSink[T], conf: QueryConfig): Unit
 
+
   /**
     * Writes the [[Table]] to a [[TableSink]] that was registered under the specified name.
     *
@@ -745,15 +747,26 @@ abstract class TableEnvironment(val config: TableConfig) {
     * @param conf The query configuration to use.
     */
   private[flink] def insertInto(table: Table, sinkTableName: String, conf: QueryConfig): Unit = {
+    insertInto(table, Array(sinkTableName), conf)
+  }
+
+  /**
+    * Writes the [[Table]] to a [[TableSink]] that was registered under the specified name.
+    *
+    * @param table The table to write to the TableSink.
+    * @param tablePath The path of the table to insert.
+    * @param conf The query configuration to use.
+    */
+  private[flink] def insertInto(table: Table, tablePath: Array[String], conf: QueryConfig): Unit = {
 
     // check that sink table exists
-    if (null == sinkTableName) throw TableException("Name of TableSink must not be null.")
-    if (sinkTableName.isEmpty) throw TableException("Name of TableSink must not be empty.")
-    if (!isRegistered(sinkTableName)) {
-      throw TableException(s"No table was registered under the name $sinkTableName.")
+    if (null == tablePath) throw TableException("Name of TableSink must not be null.")
+    if (tablePath.isEmpty) throw TableException("Name of TableSink must not be empty.")
+    if (!isRegistered(tablePath)) {
+      throw TableException(s"No table was registered under the name $tablePath.")
     }
 
-    getTable(sinkTableName) match {
+    getTable(tablePath) match {
 
       // check for registered table that wraps a sink
       case s: TableSourceSinkTable[_, _] if s.tableSinkTable.isDefined =>
@@ -777,7 +790,8 @@ abstract class TableEnvironment(val config: TableConfig) {
             .mkString("[", ", ", "]")
 
           throw ValidationException(
-            s"Field types of query result and registered TableSink $sinkTableName do not match.\n" +
+            s"Field types of query result and registered " +
+              s"TableSink ${tablePath.mkString(".")} do not match.\n" +
               s"Query result schema: $srcSchema\n" +
               s"TableSink schema:    $sinkSchema")
         }
@@ -785,7 +799,8 @@ abstract class TableEnvironment(val config: TableConfig) {
         // emit the table to the configured table sink
         writeToSink(table, tableSink, conf)
       case _ =>
-        throw TableException(s"The table registered as $sinkTableName is not a TableSink. " +
+        throw TableException(s"The table registered " +
+          s"as ${tablePath.mkString(".")} is not a TableSink. " +
           s"You can only emit query results to a registered TableSink.")
     }
   }
@@ -824,12 +839,44 @@ abstract class TableEnvironment(val config: TableConfig) {
     * @param name The table name to check.
     * @return true, if a table is registered under the name, false otherwise.
     */
-  protected[flink] def isRegistered(name: String): Boolean = {
-    rootSchema.getTableNames.contains(name)
+  protected[flink] def isRegistered(tableName: String): Boolean = {
+    isRegistered(Array(tableName))
   }
 
-  protected def getTable(name: String): org.apache.calcite.schema.Table = {
-    rootSchema.getTable(name)
+  protected[flink] def getTable(tableName: String): org.apache.calcite.schema.Table = {
+    getTable(Array(tableName))
+  }
+
+  protected[flink] def isRegistered(tablePath: Array[String]): Boolean = {
+    require(tablePath != null && !tablePath.isEmpty, "tablePath must not be null or empty.")
+    if(tablePath.length == 1) {
+      rootSchema.getTableNames.contains(tablePath(0))
+    } else {
+      val schemaPaths = tablePath.slice(0, tablePath.length - 1)
+      val schema = getSchema(schemaPaths)
+      if (schema != null) {
+        val tableName = tablePath(tablePath.length - 1)
+        schema.getTableNames.contains(tableName)
+      } else {
+        false
+      }
+    }
+  }
+
+  protected[flink] def getTable(tablePath: Array[String]): org.apache.calcite.schema.Table = {
+    require(tablePath != null && !tablePath.isEmpty, "tablePath must not be null or empty.")
+    if (tablePath.length == 1) {
+      rootSchema.getTable(tablePath(0))
+    } else {
+      val schemaPaths = tablePath.slice(0, tablePath.length - 1)
+      val schema = getSchema(schemaPaths)
+      if (schema != null) {
+        val tableName = tablePath(tablePath.length - 1)
+        schema.getTable(tableName)
+      } else {
+        null
+      }
+    }
   }
 
   protected def getRowType(name: String): RelDataType = {
